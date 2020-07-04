@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2020/7/4 8:35:06                             */
+/* Created on:     2020/7/4 10:25:44                            */
 /*==============================================================*/
 
 
@@ -39,13 +39,12 @@ create table Commodity_orders
 (
    order_id             varchar(20) not null,
    product_id           varchar(20) not null,
-   Use_user_id          varchar(20),
-   user_id              varchar(20) not null,
+   user_id              varchar(20),
+   address_id           varchar(20),
    old_money            varchar(50) not null,
    new_money            varchar(50) not null,
    coupon_id            varchar(20) not null,
    request_time         timestamp not null,
-   address_id           varchar(20) not null,
    order_status         varchar(50) not null,
    number               double not null,
    price                varchar(50) not null,
@@ -109,8 +108,7 @@ create table Full_Fold_Information
 create table Limited_time_promotional_information
 (
    promotion_id         varchar(20) not null,
-   Pro_product_id       varchar(20),
-   product_id           varchar(20) not null,
+   product_id           varchar(20),
    promotion_price      double not null,
    promotion_num        double not null,
    star_time            timestamp not null,
@@ -208,8 +206,7 @@ create table coupon
 create table delivery_address
 (
    address_id           varchar(20) not null,
-   Use_user_id          varchar(20),
-   user_id              varchar(20) not null,
+   user_id              varchar(20),
    province             varchar(50) not null,
    city                 varchar(50) not null,
    area                 varchar(50) not null,
@@ -232,7 +229,10 @@ create table product_review
    primary key (user_id, product_id)
 );
 
-alter table Commodity_orders add constraint FK_order foreign key (Use_user_id)
+alter table Commodity_orders add constraint FK_have foreign key (address_id)
+      references delivery_address (address_id) on delete restrict on update restrict;
+
+alter table Commodity_orders add constraint FK_order foreign key (user_id)
       references User_Information (user_id) on delete restrict on update restrict;
 
 alter table Commodity_orders add constraint FK_order_details foreign key (product_id)
@@ -241,33 +241,33 @@ alter table Commodity_orders add constraint FK_order_details foreign key (produc
 alter table Commodity_purchase add constraint FK_buy foreign key (admin_id)
       references admin_information (admin_id) on delete restrict on update restrict;
 
-alter table Full_Fold_Association add constraint FK_Full_Fold_Association foreign key (fold_id)
+alter table Full_Fold_Association add constraint FK_full_fold_information foreign key (fold_id)
       references Full_Fold_Information (fold_id) on delete restrict on update restrict;
 
-alter table Full_Fold_Association add constraint FK_Full_Fold_Association foreign key (product_id)
+alter table Full_Fold_Association add constraint FK_full_fold_product foreign key (product_id)
       references Product_information (product_id) on delete restrict on update restrict;
 
-alter table Limited_time_promotional_information add constraint FK_promotional foreign key (Pro_product_id)
+alter table Limited_time_promotional_information add constraint FK_promotional foreign key (product_id)
       references Product_information (product_id) on delete restrict on update restrict;
 
-alter table Product_Recipe_Recommendation add constraint FK_Product_Recipe_Recommendation foreign key (product_id)
+alter table Product_Recipe_Recommendation add constraint FK_product_recommendation foreign key (product_id)
       references Product_information (product_id) on delete restrict on update restrict;
 
-alter table Product_Recipe_Recommendation add constraint FK_Product_Recipe_Recommendation foreign key (recipe_id)
+alter table Product_Recipe_Recommendation add constraint FK_recipe_recommendation foreign key (recipe_id)
       references Recipe_information (recipe_id) on delete restrict on update restrict;
 
-alter table Product_information add constraint FK_have foreign key (kind_id)
+alter table Product_information add constraint FK_contain foreign key (kind_id)
       references Fresh_kind (kind_id) on delete restrict on update restrict;
 
 alter table coupon add constraint FK_use foreign key (order_id)
       references Commodity_orders (order_id) on delete restrict on update restrict;
 
-alter table delivery_address add constraint FK_have foreign key (Use_user_id)
+alter table delivery_address add constraint FK_set foreign key (user_id)
       references User_Information (user_id) on delete restrict on update restrict;
 
-alter table product_review add constraint FK_product_review foreign key (product_id)
+alter table product_review add constraint FK_evaluate foreign key (user_id)
+      references User_Information (user_id) on delete restrict on update restrict;
+
+alter table product_review add constraint FK_evaluation foreign key (product_id)
       references Product_information (product_id) on delete restrict on update restrict;
-
-alter table product_review add constraint FK_product_review foreign key (user_id)
-      references User_Information (user_id) on delete restrict on update restrict;
 
