@@ -6,19 +6,29 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import cn.edu.zucc.fresh.FreshUtil;
+import cn.edu.zucc.fresh.model.BeanAdmin;
+import cn.edu.zucc.fresh.model.BeanUser;
+import cn.edu.zucc.fresh.util.BaseException;
+import cn.edu.zucc.fresh.control.*;
+
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 
 public class FrmLogin2 extends JFrame {
 	
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField adminId;
+	private JPasswordField adminPwd;
 
 	/**
 	 * Launch the application.
@@ -40,48 +50,64 @@ public class FrmLogin2 extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmLogin2() {
-		setTitle("\u7BA1\u7406\u5458\u767B\u5F55");
+		setTitle("管理员登录");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(500, 150, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(167, 47, 190, 35);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		adminId = new JTextField();
+		adminId.setBounds(167, 47, 190, 35);
+		contentPane.add(adminId);
+		adminId.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(167, 103, 190, 35);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
+		adminPwd = new JPasswordField();
+		adminPwd.setBounds(167, 103, 190, 35);
+		contentPane.add(adminPwd);
 		
-		JLabel lblNewLabel = new JLabel("\u8D26\u53F7\uFF1A");
-		lblNewLabel.setFont(new Font("宋体", Font.PLAIN, 18));
-		lblNewLabel.setBounds(99, 55, 58, 15);
-		contentPane.add(lblNewLabel);
+		JLabel ID = new JLabel("账号：");
+		ID.setFont(new Font("宋体", Font.PLAIN, 18));
+		ID.setBounds(99, 55, 58, 15);
+		contentPane.add(ID);
 		
-		JLabel lblNewLabel_1 = new JLabel("\u5BC6\u7801\uFF1A");
-		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(99, 111, 58, 15);
-		contentPane.add(lblNewLabel_1);
+		JLabel PWD = new JLabel("密码：");
+		PWD.setFont(new Font("宋体", Font.PLAIN, 18));
+		PWD.setBounds(99, 111, 58, 15);
+		contentPane.add(PWD);
 		
-		JButton btnNewButton = new JButton("\u767B\u5F55");
-		btnNewButton.setBounds(189, 208, 100, 40);
-		contentPane.add(btnNewButton);
-		
-		JButton btnNewButton_1 = new JButton("\u9000\u51FA");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton Login = new JButton("登录");
+		Login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == btnNewButton_1) {
-					System.exit(0);
+				if (e.getSource() == Login) {
+					String adminid=adminId.getText();
+					String pwd=new String(adminPwd.getPassword());
+					try {
+						BeanAdmin.currentLoginAdmin= FreshUtil.adminManager.login(adminid, pwd);
+					} catch (BaseException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					new FrmMain2();
+					setVisible(false);
 				}
 			}
 		});
-		btnNewButton_1.setBounds(326, 208, 100, 40);
-		contentPane.add(btnNewButton_1);
+		Login.setBounds(189, 208, 100, 40);
+		contentPane.add(Login);
+		
+		JButton  LastStep= new JButton("返回上一步");
+		LastStep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == LastStep) {
+					new FrmLogin1();
+					setVisible(false);
+				}
+			}
+		});
+		LastStep.setBounds(326, 208, 100, 40);
+		contentPane.add(LastStep);
 		
 		this.setVisible(true);
 	}

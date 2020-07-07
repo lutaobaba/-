@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 public class FrmLogin1 extends JFrame {
 
 	private JPanel contentPane;
-	static JFrame jf = new JFrame("生鲜网超登录选择");
 	/**
 	 * Launch the application.
 	 */
@@ -35,39 +34,40 @@ public class FrmLogin1 extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+
 	public FrmLogin1() {
-		setTitle("\u751F\u9C9C\u7F51\u8D85");
+		setVisible(true);
+		setTitle("生鲜网超");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 464, 217);
+		setBounds(500, 150, 464, 217);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);	   
 		   
-		JButton btnNewButton = new JButton("\u7BA1\u7406\u5458\u767B\u5F55");
+		JButton btnNewButton = new JButton("管理员登录");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource()==btnNewButton) {
 					new FrmLogin2();
 				}
+				setVisible(false);
 			}
 		});
 		btnNewButton.setBounds(32, 51, 180, 75);
 		contentPane.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("\u7528\u6237\u767B\u5F55");
+		JButton btnNewButton_1 = new JButton("用户登录");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (arg0.getSource()==btnNewButton_1) {
 					new FrmLogin3();
 				}
+				setVisible(false);
 			}
 		});
 		btnNewButton_1.setBounds(241, 51, 180, 75);
 		contentPane.add(btnNewButton_1);
 	}
 	
-	public static void closeThis(){
-		jf.dispose();
-	}
 }

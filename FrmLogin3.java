@@ -6,19 +6,28 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import cn.edu.zucc.fresh.FreshUtil;
+import cn.edu.zucc.fresh.model.BeanAdmin;
+import cn.edu.zucc.fresh.model.BeanUser;
+import cn.edu.zucc.fresh.util.BaseException;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.Color;
+import javax.swing.JCheckBox;
+import javax.swing.JPasswordField;
 
 public class FrmLogin3 extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField userId;
+	private JPasswordField userPwd;
 
 	/**
 	 * Launch the application.
@@ -41,66 +50,78 @@ public class FrmLogin3 extends JFrame {
 	 */
 	public FrmLogin3() {
 		setBackground(new Color(240, 240, 240));
-		setTitle("\u7528\u6237\u767B\u5F55");
+		setTitle("ÓÃ»§µÇÂ¼");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(500, 150, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("\u8D26\u53F7\uFF1A");
-		lblNewLabel.setFont(new Font("ËÎÌå", Font.PLAIN, 18));
-		lblNewLabel.setBounds(91, 46, 58, 15);
-		contentPane.add(lblNewLabel);
+		JLabel ID = new JLabel("ÕËºÅ£º");
+		ID.setFont(new Font("ËÎÌå", Font.PLAIN, 18));
+		ID.setBounds(91, 46, 58, 15);
+		contentPane.add(ID);
 		
-		JLabel lblNewLabel_1 = new JLabel("\u5BC6\u7801\uFF1A");
-		lblNewLabel_1.setFont(new Font("ËÎÌå", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(91, 118, 58, 15);
-		contentPane.add(lblNewLabel_1);
+		JLabel PWD = new JLabel("ÃÜÂë£º");
+		PWD.setFont(new Font("ËÎÌå", Font.PLAIN, 18));
+		PWD.setBounds(91, 118, 58, 15);
+		contentPane.add(PWD);
 		
-		textField = new JTextField();
-		textField.setBounds(159, 38, 190, 35);
-		contentPane.add(textField);
-		textField.setColumns(10);
+		userId = new JTextField();
+		userId.setBounds(159, 38, 190, 35);
+		contentPane.add(userId);
+		userId.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(159, 110, 190, 35);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
+		userPwd = new JPasswordField();
+		userPwd.setBounds(159, 110, 190, 35);
+		contentPane.add(userPwd);
 		
-		JButton btnNewButton = new JButton("\u6CE8\u518C");
-		btnNewButton.addActionListener(new ActionListener() {
+		
+		JButton btnCreat = new JButton("×¢²á");
+		btnCreat.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource()==btnNewButton) {
-					new FrmCreat();
+				if (e.getSource()==btnCreat) {
+					new FrmRegister();
+				}
+				setVisible(false);
+			}
+		});
+		btnCreat.setBounds(106, 199, 100, 40);
+		contentPane.add(btnCreat);
+		
+		JButton Login = new JButton("µÇÂ¼");
+		Login.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (e.getSource() == Login) {
+					String userid=userId.getText();
+					String pwd=new String(userPwd.getPassword());
+					try {
+						BeanUser.currentLoginUser= FreshUtil.userManager.login(userid, pwd);
+					} catch (BaseException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					new FrmMain3();
+					setVisible(false);
 				}
 			}
 		});
-		btnNewButton.setBounds(106, 199, 100, 40);
-		contentPane.add(btnNewButton);
+		Login.setBounds(216, 199, 100, 40);
+		contentPane.add(Login);
 		
-		JButton btnNewButton_1 = new JButton("\u767B\u5F55");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton  LastStep= new JButton("·µ»ØÉÏÒ»²½");
+		LastStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		btnNewButton_1.setBounds(216, 199, 100, 40);
-		contentPane.add(btnNewButton_1);
-		
-		JButton btnNewButton_2 = new JButton("\u9000\u51FA");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (e.getSource()==btnNewButton_2) {
-					System.exit(0);
+				if (e.getSource() == LastStep) {
+					new FrmLogin1();
+					setVisible(false);
 				}
 			}
 		});
-		btnNewButton_2.setBounds(326, 199, 100, 40);
-		contentPane.add(btnNewButton_2);
+		LastStep.setBounds(326, 199, 100, 40);
+		contentPane.add(LastStep);
 		
 		this.setVisible(true);
 	}
-
 }
