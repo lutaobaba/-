@@ -113,7 +113,7 @@ public class UserManager implements IUserManager {
 			java.sql.ResultSet rs=pst.executeQuery();
 			while(rs.next()) {
 				if(!(oldPwd.equals(BeanUser.currentLoginUser.getUserPwd()))) throw new BusinessException("‘≠ º√‹¬Î¥ÌŒÛ");
-				sql="update user_information set user_pwd=£ø where user_id=?";
+				sql="update user_information set user_pwd=? where user_id=?";
 				pst=conn.prepareStatement(sql);
 				pst.setString(1, newPwd);
 				pst.setString(2, BeanUser.currentLoginUser.getUserId());
