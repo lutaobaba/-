@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.zucc.fresh.itf.IProductManager;
+import cn.edu.zucc.fresh.model.BeanFoldAss;
+import cn.edu.zucc.fresh.model.BeanFoldInfor;
 import cn.edu.zucc.fresh.model.BeanFreshKind;
 import cn.edu.zucc.fresh.model.BeanProduct;
-import cn.edu.zucc.fresh.model.BeanUser;
+import cn.edu.zucc.fresh.model.BeanProductRecipe;
+import cn.edu.zucc.fresh.model.BeanRecipe;
 import cn.edu.zucc.fresh.util.*;
 
 public class ProductManager implements IProductManager{
@@ -106,7 +109,6 @@ public class ProductManager implements IProductManager{
 		
 		return result;
 	}
-
 	@Override
 	public void deleteProduct(BeanProduct product) throws BaseException {
 		// TODO Auto-generated method stub
@@ -140,6 +142,210 @@ public class ProductManager implements IProductManager{
 					e.printStackTrace();
 				}
 		}
+		
+	}
+	@Override
+	public List<BeanProductRecipe> loadRecipe(BeanRecipe recipe) throws BaseException {
+		// TODO Auto-generated method stub
+		List<BeanProductRecipe> result=new ArrayList<BeanProductRecipe>();
+		Connection conn=null;
+		try {
+			String pr=recipe.getRecipeId();
+			conn=DBUtil.getConnection();
+			String sql="select * from product_recipe_recommendation where recipe_id=? order by product_id";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1, pr);
+			java.sql.ResultSet rs=pst.executeQuery();
+			while(rs.next()) {
+				BeanProductRecipe bpr=new BeanProductRecipe();
+				bpr.setProductId(rs.getString(1));
+				bpr.setRecipeId(rs.getString(2));
+				bpr.setDes(rs.getString(3));
+			    result.add(bpr);
+			}
+			rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+		return result;
+	}
+	@Override
+	public BeanProductRecipe addRecipe(String productid, BeanRecipe Recipe, String des)
+			throws BaseException {
+		// TODO Auto-generated method stub
+		if(productid==null || "".equals(productid)) throw new BusinessException("商品编号不能为空");
+		if(des==null || "".equals(des)) throw new BusinessException("描述不能为空");
+		Connection conn=null;
+		try {
+			String prid=Recipe.getRecipeId();
+			conn=DBUtil.getConnection();
+			
+			/*String sql="select product_id from product_recipe_recommendation where product_id=? ";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			//pst.setString(1, prid);
+			pst.setString(1, productid);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(rs.next()) throw new BusinessException("商品编号已存在");
+			rs.close();
+			pst.close();*/
+			
+			String sql="select product_id from product_information where product_id=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1, productid);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("商品编号不存在");
+			rs.close();
+			pst.close();
+			
+			
+			sql="insert into product_recipe_recommendation(product_id,recipe_id,des) values(?,?,?)";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,productid);
+			pst.setString(2,prid);
+			pst.setString(3,des);
+			pst.execute();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		return null;
+	}
+	@Override
+	public void deleteRecipe(BeanProductRecipe productRecipe) throws BaseException {
+		// TODO Auto-generated method stub
+		Connection conn=null;
+		try {
+			conn=DBUtil.getConnection();
+			conn.setAutoCommit(false);
+			
+			String sql="delete from product_recipe_recommendation where recipe_id = ?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1,productRecipe.getRecipeId());
+			pst.execute();
+			pst.close();
+			
+			
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			}catch(SQLException ex) {
+				ex.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+	}
+	@Override
+	public BeanFoldAss addASS(String productid, BeanFoldInfor bfInfor) throws BaseException {
+		// TODO Auto-generated method stub
+		if(productid==null || "".equals(productid)) throw new BusinessException("商品编号不能为空");
+		Connection conn=null;
+		try {
+			String bfid=bfInfor.getFoldId();
+			conn=DBUtil.getConnection();
+			
+			String sql="select product_id from product_information where product_id=?";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1, productid);
+			java.sql.ResultSet rs=pst.executeQuery();
+			if(!rs.next()) throw new BusinessException("商品编号不存在");
+			rs.close();
+			pst.close();
+			
+			
+			sql="insert into full_fold_association(product_id,fold_id) values(?,?)";
+			pst=conn.prepareStatement(sql);
+			pst.setString(1,productid);
+			pst.setString(2, bfid);
+			pst.execute();
+			pst.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		return null;
+	}
+	@Override
+	public List<BeanFoldAss> loadAss(BeanFoldInfor bFoldInfor) throws BaseException {
+		// TODO Auto-generated method stub
+		List<BeanFoldAss> result=new ArrayList<BeanFoldAss>();
+		Connection conn=null;
+		try {
+			String bfiString=bFoldInfor.getFoldId();
+			conn=DBUtil.getConnection();
+			String sql="select * from full_fold_association where fold_id=? order by product_id";
+			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
+			pst.setString(1, bfiString);
+			java.sql.ResultSet rs=pst.executeQuery();
+			while(rs.next()) {
+				BeanFoldAss bfAss=new BeanFoldAss();
+				bfAss.setProductId(rs.getString(1));
+				bfAss.setFoldId(rs.getString(2));
+			    result.add(bfAss);
+			}
+			rs.close();
+			pst.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e);
+		}
+		finally{
+			if(conn!=null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+		return result;
+	}
+	@Override
+	public void deleteAss(BeanFoldAss bfAss) throws BaseException {
+		// TODO Auto-generated method stub
 		
 	}
 }

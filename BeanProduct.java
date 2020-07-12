@@ -3,7 +3,7 @@ package cn.edu.zucc.fresh.model;
 public class BeanProduct {
 	public static final String[] tblStepTitle={"商品编号","商品名称","价格","会员价","数量","规格","描述"};
 	private String product_id;
-	private String kind_id;//
+	private String kind_id;
 	private String product_name;
 	private String price;
 	private String vip_price;
